@@ -1,0 +1,1674 @@
+mysql> CREATE DATABASE COMPANY;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> CREATE TABLE dept_manager(
+    -> dept_no CHAR(4),
+    -> emp_no INT,
+    -> from_date DATE,
+    -> to_date Date
+    -> );
+Query OK, 0 rows affected (0.41 sec)
+
+mysql> CREATE TABLE employees(
+    -> emp_no INT primary key,
+    -> birth_date DATE,
+    -> first_name VARCHAR(14),
+    -> last_name VARCHAR(16),
+    -> sex ENUM('M','F'),
+    -> hire_date DATE
+    -> );
+Query OK, 0 rows affected (0.35 sec)
+
+
+mysql> create table dept_emp(
+    -> emp_no INT,
+    -> dept_no CHAR(4),
+    -> from_date DATE,
+    -> to_date DATE
+    -> );
+Query OK, 0 rows affected (0.51 sec)
+
+
+mysql> create table titles(
+    -> emp_no INT,
+    -> title VARCHAR(50),
+    -> from_date DATE,
+    -> to_date DATE
+    -> );
+Query OK, 0 rows affected (0.43 sec)
+
+mysql> create table salaries(
+    -> emp_no INT,
+    -> salary INT,
+    -> from_date DATE,
+    -> to_date Date
+    -> );
+Query OK, 0 rows affected (0.40 sec)
+
+mysql> alter table dept_manager
+    -> add foreign key (dept_no) references departments(dept_no);
+Query OK, 0 rows affected (2.74 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table titles
+    -> add foreign key (emp_no) references employees(emp_no);
+Query OK, 0 rows affected (1.14 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table salaries
+    -> add foreign key (emp_no) references employees(emp_no);
+Query OK, 0 rows affected (1.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table dept_emp
+    -> add foreign key (emp_no) references employees(emp_no);
+Query OK, 0 rows affected (1.25 sec)
+Records: 0  Duplicates: 0  
+
+1.
+//Importing the sql files to the database through commandline
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_employees.sql
+Enter password:
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_salaries2.sql
+Enter password:
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_dept_manager.sql
+Enter password:
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_departments.sql
+Enter password:
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_dept_emp.sql
+Enter password:
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u root -p company < load_titles.sql
+Enter password:
+
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| departments       |
+| dept_emp          |
+| dept_manager      |
+| employees         |
+| salaries          |
+| titles            |
++-------------------+
+6 rows in set (0.00 sec)
+
+2.
+mysql> select last_name from employees limit 10;
++-----------+
+| last_name |
++-----------+
+| Facello   |
+| Simmel    |
+| Bamford   |
+| Koblick   |
+| Maliniak  |
+| Preusig   |
+| Zielinski |
+| Kalloufi  |
+| Peac      |
+| Piveteau  |
++-----------+
+10 rows in set (0.37 sec)
+
+3.
+mysql> select count(title) as no_of_engineers,dept_name
+    -> from titles,departments,dept_emp
+    -> where titles.emp_no = dept_emp.emp_no and dept_emp.dept_no = departments.dept_no and title = "Engineer"
+    -> group by dept_name;
++-----------------+--------------------+
+| no_of_engineers | dept_name          |
++-----------------+--------------------+
+|            4724 | Customer Service   |
+|          116270 | Development        |
+|           99298 | Production         |
+|           27704 | Quality Management |
+|            5972 | Research           |
++-----------------+--------------------+
+5 rows in set (4.51 sec)
+
+4.
+mysql> select first_name,last_name
+    -> from employees,titles,dept_manager
+    -> where employees.emp_no = dept_manager.emp_no and dept_manager.emp_no = titles.emp_no
+    -> and title = "Senior Engineer" and sex = 'F';
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Rosine     | Cools     |
+| Sanjoy     | Quadeer   |
++------------+-----------+
+2 rows in set (0.00 sec)
+
+5.
+mysql> select dept_name,title
+    -> from departments,titles,dept_emp,salaries
+    -> where titles.emp_no = salaries.emp_no and dept_emp.dept_no = departments.dept_no
+    -> and salaries.emp_no = dept_emp.emp_no and salary > 115000;
++--------------------+--------------------+
+| dept_name          | title              |
++--------------------+--------------------+
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Engineer           |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Production         | Senior Engineer    |
+| Finance            | Senior Staff       |
+| Finance            | Senior Staff       |
+| Finance            | Senior Staff       |
+| Finance            | Senior Staff       |
+| Finance            | Senior Staff       |
+| Finance            | Senior Staff       |
+| Finance            | Staff              |
+| Finance            | Staff              |
+| Finance            | Staff              |
+| Finance            | Staff              |
+| Finance            | Staff              |
+| Finance            | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Senior Staff       |
+| Sales              | Staff              |
+| Sales              | Staff              |
+| Sales              | Staff            |rl-C -- sending "KILL QUERY 58" to server ...
+   |
++--------------------+--------------------+
+--------------------+---
+21934 rows in set (15.00 sec)
+
+5.
+mysql> select count(title) as no_of_employees,dept_name
+    -> from departments,titles,dept_emp,salaries
+    -> where titles.emp_no = salaries.emp_no and dept_emp.dept_no = departments.dept_no
+    -> and salaries.emp_no = dept_emp.emp_no and salary > 115000
+    -> group by dept_name;
++-----------------+--------------------+
+| no_of_employees | dept_name          |
++-----------------+--------------------+
+|             926 | Customer Service   |
+|             566 | Development        |
+|            1326 | Finance            |
+|              84 | Human Resources    |
+|            1860 | Marketing          |
+|             428 | Production         |
+|              56 | Quality Management |
+|             182 | Research           |
+|           16506 | Sales              |
++-----------------+--------------------+
+9 rows in set (3.06 sec)
+
+6.mysql> select first_name,last_name,year(CURDATE())-year(birth_date) as age,
+    -> year(CURDATE())-year(hire_date) as years_of_service,hire_date
+    -> from employees
+    -> where year(CURDATE())-year(birth_date) > 50
+    -> and year(CURDATE())-year(hire_date) > 10;
++----------------+------------------+------+------------------+------------+
+| first_name     | last_name        | age  | years_of_service | hire_date  |
++----------------+------------------+------+------------------+------------+
+| Georgi         | Facello          |   67 |               34 | 1986-06-26 |
+| Bezalel        | Simmel           |   56 |               35 | 1985-11-21 |
+| Parto          | Bamford          |   61 |               34 | 1986-08-28 |
+| Chirstian      | Koblick          |   66 |               34 | 1986-12-01 |
+| Kyoichi        | Maliniak         |   65 |               31 | 1989-09-12 |
+| Anneke         | Preusig          |   67 |               31 | 1989-06-02 |
+| Tzvetan        | Zielinski        |   63 |               31 | 1989-02-10 |
+| Saniya         | Kalloufi         |   62 |               26 | 1994-09-15 |
+| Sumant         | Peac             |   68 |               35 | 1985-02-18 |
+| Duangkaew      | Piveteau         |   57 |               31 | 1989-08-24 |
+| Mary           | Sluis            |   67 |               30 | 1990-01-22 |
+| Patricio       | Bridgland        |   60 |               28 | 1992-12-18 |
+| Eberhardt      | Terkki           |   57 |               35 | 1985-10-20 |
+| Berni          | Genin            |   64 |               33 | 1987-03-11 |
+| Guoxiang       | Nooteboom        |   61 |               33 | 1987-07-02 |
+| Kazuhito       | Cappelletti      |   59 |               25 | 1995-01-27 |
+| Cristinel      | Bouloucos        |   62 |               27 | 1993-08-03 |
+| Kazuhide       | Peha             |   66 |               33 | 1987-04-03 |
+| Lillian        | Haddadi          |   67 |               21 | 1999-04-30 |
+| Mayuko         | Warwick          |   68 |               29 | 1991-01-26 |
+| Ramzi          | Erde             |   60 |               32 | 1988-02-10 |
+| Shahaf         | Famili           |   68 |               25 | 1995-08-22 |
+| Bojan          | Montemayor       |   67 |               31 | 1989-12-17 |
+| Suzette        | Pettey           |   62 |               23 | 1997-05-19 |
+| Prasadram      | Heyers           |   62 |               33 | 1987-08-17 |
+| Yongqiao       | Berztiss         |   67 |               25 | 1995-03-20 |
+| Divier         | Reistad          |   58 |               31 | 1989-07-07 |
+| Domenick       | Tempesti         |   57 |               29 | 1991-10-22 |
+| Otmar          | Herbst           |   64 |               35 | 1985-11-20 |
+| Elvis          | Demeyer          |   62 |               26 | 1994-02-17 |
+| Karsten        | Joslin           |   61 |               29 | 1991-09-01 |
+| Jeong          | Reistad          |   60 |               30 | 1990-06-20 |
+| Arif           | Merlo            |   64 |               33 | 1987-03-18 |
+| Bader          | Swan             |   58 |               32 | 1988-09-21 |
+| Alain          | Chappelet        |   67 |               32 | 1988-09-05 |
+| Adamantios     | Portugali        |   61 |               28 | 1992-01-03 |
+| Pradeep        | Makrucki         |   57 |               30 | 1990-12-05 |
+| Huan           | Lortz            |   60 |               31 | 1989-09-20 |
+| Alejandro      | Brender          |   61 |               32 | 1988-01-19 |
+| Weiyi          | Meriste          |   61 |               27 | 1993-02-14 |
+| Uri            | Lenart           |   61 |               31 | 1989-11-12 |
+| Magy           | Stamatiou        |   64 |               27 | 1993-03-21 |
+| Yishay         | Tzvieli          |   60 |               30 | 1990-10-20 |
+| Mingsen        | Casley           |   59 |               26 | 1994-05-21 |
+| Moss           | Shanbhogue       |   63 |               31 | 1989-09-02 |
+| Lucien         | Rosenbaum        |   60 |               28 | 1992-06-20 |
+| Zvonko         | Nyanchama        |   68 |               31 | 1989-03-31 |
+| Florian        | Syrotiuk         |   57 |               35 | 1985-02-24 |
+| Basil          | Tramer           |   59 |               28 | 1992-05-04 |
+| Yinghua        | Dredge           |   62 |               30 | 1990-12-25 |
+| Hidefumi       | Caine            |   67 |               28 | 1992-10-15 |
+| Heping         | Nitsch           |   59 |               32 | 1988-05-21 |
+| Sanjiv         | Zschoche         |   66 |               34 | 1986-02-04 |
+| Mayumi         | Schueller        |   63 |               25 | 1995-03-13 |
+| Georgy         | Dredge           |   64 |               28 | 1992-04-27 |
+| Brendon        | Bernini          |   59 |               30 | 1990-02-01 |
+| Ebbe           | Callaway         |   66 |               28 | 1992-01-15 |
+| Berhard        | McFarlin         |   66 |               33 | 1987-04-13 |
+| Alejandro      | McAlpine         |   67 |               29 | 1991-06-26 |
+| Breannda       | Billingsley      |   59 |               33 | 1987-11-02 |
+| Tse            | Herber           |   58 |               35 | 1985-09-17 |
+| Anoosh         | Peyn             |   59 |               29 | 1991-08-30 |
+| Gino           | Leonhardt        |   68 |               31 | 1989-04-08 |
+| Udi            | Jansch           |   61 |               35 | 1985-11-20 |
+| Satosi         | Awdeh            |   57 |               32 | 1988-05-18 |
+| Kwee           | Schusler         |   68 |               34 | 1986-02-26 |
+| Claudi         | Stavenow         |   67 |               33 | 1987-03-04 |
+| Charlene       | Brattka          |   58 |               33 | 1987-08-07 |
+| Margareta      | Bierman          |   60 |               31 | 1989-11-05 |
+| Reuven         | Garigliano       |   65 |               35 | 1985-10-14 |
+| Hisao          | Lipner           |   62 |               33 | 1987-10-01 |
+| Hironoby       | Sidou            |   68 |               32 | 1988-07-21 |
+| Shir           | McClurg          |   66 |               29 | 1991-12-01 |
+| Mokhtar        | Bernatsky        |   65 |               30 | 1990-08-13 |
+| Gao            | Dolinsky         |   60 |               33 | 1987-03-19 |
+| Erez           | Ritzmann         |   68 |               35 | 1985-07-09 |
+| Mona           | Azuma            |   56 |               30 | 1990-03-02 |
+| Danel          | Mondadori        |   61 |               33 | 1987-05-26 |
+| Kshitij        | Gils             |   59 |               34 | 1986-03-27 |
+| Premal         | Baek             |   63 |               35 | 1985-11-19 |
+| Zhongwei       | Rosen            |   60 |               34 | 1986-10-30 |
+| Parviz         | Lortz            |   57 |               30 | 1990-01-03 |
+| Vishv          | Zockler          |   61 |               33 | 1987-03-31 |
+| Tuval          | Kalloufi         |   60 |               25 | 1995-12-15 |
+| Kenroku        | Malabarba        |   58 |               26 | 1994-04-09 |
+| Somnath        | Foote            |   58 |               30 | 1990-02-16 |
+| Xinglin        | Eugenio          |   61 |               34 | 1986-09-08 |
+| Jungsoon       | Syrzycki         |   66 |               32 | 1988-09-02 |
+| Sudharsan      | Flasterstein     |   57 |               34 | 1986-08-12 |
+| Kendra         | Hofting          |   59 |               34 | 1986-03-14 |
+| Amabile        | Gomatam          |   65 |               28 | 1992-11-18 |
+| Valdiodio      | Niizuma          |   56 |               31 | 1989-09-22 |
+| Sailaja        | Desikan          |   56 |               24 | 1996-11-05 |
+| Arumugam       | Ossenbruggen     |   63 |               33 | 1987-04-18 |
+| Hilari         | Morton           |   55 |               34 | 1986-07-15 |
+| Jayson         | Mandell          |   66 |               30 | 1990-01-14 |
+| Remzi          | Waschkowski      |   68 |               30 | 1990-09-15 |
+| Sreekrishna    | Servieres        |   59 |               35 | 1985-05-13 |
+| Valter         | Sullins          |   64 |               32 | 1988-10-18 |
+| Hironobu       | Haraldson        |   67 |               33 | 1987-09-21 |
+| Perla          | Heyers           |   68 |               28 | 1992-12-28 |
+| Paraskevi      | Luby             |   61 |               26 | 1994-01-26 |
+| Akemi          | Birch            |   67 |               34 | 1986-12-02 |
+| Xinyu          | Warwick          |   59 |               33 | 1987-04-16 |
+| Hironoby       | Piveteau         |   58 |               21 | 1999-03-23 |
+| Eben           | Aingworth        |   68 |               30 | 1990-12-19 |
+| Dung           | Baca             |   64 |               26 | 1994-03-22 |
+| Lunjin         | Giveon           |   68 |               34 | 1986-10-02 |
+| Mariusz        | Prampolini       |   62 |               27 | 1993-06-16 |
+| Xuejia         | Ullian           |   63 |               34 | 1986-08-22 |
+| Hugo           | Rosis            |   57 |               32 | 1988-06-19 |
+| Yuichiro       | Swick            |   57 |               35 | 1985-10-08 |
+| Jaewon         | Syrzycki         |   57 |               31 | 1989-12-24 |
+| Munir          | Demeyer          |   63 |               28 | 1992-07-17 |
+| Chikara        | Rissland         |   56 |               34 | 1986-01-23 |
+| Dayanand       | Czap             |   65 |               35 | 1985-05-28 |
+| Kiyotoshi      | Blokdijk         |   59 |               30 | 1990-05-28 |
+| Zhonghui       | Zyda             |   63 |               30 | 1990-09-13 |
+| Domenick       | Peltason         |   60 |               34 | 1986-03-14 |
+| Armond         | Fairtlough       |   60 |               24 | 1996-07-06 |
+| Guoxiang       | Ramsay           |   58 |               31 | 1989-05-03 |
+| Ohad           | Esposito         |   55 |               28 | 1992-12-23 |
+| Hinrich        | Randi            |   58 |               27 | 1993-01-15 |
+| Geraldo        | Marwedel         |   58 |               29 | 1991-09-05 |
+| Syozo          | Hiltgen          |   63 |               30 | 1990-10-26 |
+| Kayoko         | Valtorta         |   66 |               35 | 1985-09-08 |
+| Subir          | Baja             |   68 |               31 | 1989-01-14 |
+| Babette        | Lamba            |   62 |               32 | 1988-06-06 |
+| Armond         | Peir             |   65 |               35 | 1985-12-10 |
+| Nishit         | Casperson        |   65 |               32 | 1988-06-21 |
+| Magdalena      | Eldridge         |   68 |               26 | 1994-11-17 |
+| Ayakannu       | Skrikant         |   64 |               26 | 1994-10-30 |
+| Giri           | Isaak            |   57 |               35 | 1985-12-15 |
+| Diederik       | Siprelle         |   67 |               33 | 1987-12-12 |
+| Nathan         | Monkewich        |   64 |               32 | 1988-02-19 |
+| Zissis         | Pintelas         |   59 |               34 | 1986-02-11 |
+| Maren          | Hutton           |   61 |               35 | 1985-02-18 |
+| Perry          | Shimshoni        |   65 |               34 | 1986-09-18 |
+| Ewing          | Foong            |   57 |               22 | 1998-03-15 |
+| Yucel          | Auria            |   63 |               29 | 1991-03-14 |
+| Shahaf         | Ishibashi        |   60 |               27 | 1993-05-06 |
+| Tzvetan        | Hettesheimer     |   64 |               27 | 1993-10-28 |
+| Sakthirel      | Bakhtari         |   59 |               32 | 1988-09-30 |
+| Marla          | Brendel          |   61 |               35 | 1985-10-14 |
+| Akemi          | Esposito         |   64 |               33 | 1987-08-01 |
+| Chenyi         | Syang            |   61 |               32 | 1988-06-28 |
+| Kazuhito       | Encarnacion      |   56 |               34 | 1986-08-21 |
+| Douadi         | Azumi            |   63 |               25 | 1995-10-10 |
+| Xiadong        | Perry            |   67 |               34 | 1986-11-05 |
+| Zhenbing       | Perng            |   65 |               34 | 1986-11-16 |
+| Itzchak        | Lichtner         |   61 |               30 | 1990-04-10 |
+| Jaques         | Munro            |   66 |               34 | 1986-01-27 |
+| Heekeun        | Majewski         |   65 |               33 | 1987-04-08 |
+| Abdulah        | Thibadeau        |   63 |               30 | 1990-12-12 |
+| Adas           | Nastansky        |   61 |               30 | 1990-01-05 |
+| Sumali         | Fargier          |   56 |               35 | 1985-03-10 |
+| Nigel          | Aloisi           |   66 |               35 | 1985-11-02 |
+| Khedija        | Mitsuhashi       |   62 |               34 | 1986-01-29 |
+| Serif          | Buescher         |   65 |               29 | 1991-05-29 |
+| Debatosh       | Khasidashvili    |   67 |               31 | 1989-01-30 |
+| Hairong        | Mellouli         |   67 |               32 | 1988-04-03 |
+| Florina        | Eugenio          |   63 |               29 | 1991-05-01 |
+| Karsten        | Szmurlo          |   68 |               31 | 1989-07-19 |
+| Jagoda         | Braunmuhl        |   64 |               35 | 1985-11-12 |
+| Miyeon         | Macedo           |   60 |               32 | 1988-05-17 |
+| Samphel        | Siegrist         |   67 |               27 | 1993-01-01 |
+| Duangkaew      | Rassart          |   62 |               28 | 1992-04-04 |
+| Dharmaraja     | Stassinopoulos   |   56 |               34 | 1986-12-06 |
+| Sampalli       | Snedden          |   59 |               28 | 1992-07-24 |
+| Kasturi        | Jenevein         |   60 |               34 | 1986-01-02 |
+| Herbert        | Trachtenberg     |   63 |               31 | 1989-07-22 |
+| Shigeu         | Matzen           |   63 |               25 | 1995-10-13 |
+| Shrikanth      | Mahmud           |   58 |               28 | 1992-03-21 |
+| Badri          | Furudate         |   61 |               33 | 1987-06-01 |
+| Aleksandar     | Ananiadou        |   60 |               32 | 1988-01-11 |
+| Brendon        | Lenart           |   63 |               26 | 1994-12-22 |
+| Pragnesh       | Iisaka           |   66 |               27 | 1993-02-06 |
+| Valery         | Litvinov         |   57 |               34 | 1986-10-07 |
+| Deniz          | Duclos           |   59 |               30 | 1990-10-04 |
+| Shaw           | Wendorf          |   64 |               34 | 1986-02-25 |
+| Sibyl          | Nooteboom        |   57 |               32 | 1988-06-22 |
+| Moriyoshi      | Merey            |   59 |               30 | 1990-09-02 |
+| Mechthild      | Bonifati         |   66 |               24 | 1996-08-11 |
+| Mihalis        | Lowrie           |   63 |               33 | 1987-10-29 |
+| Duro           | Sidhu            |   61 |               34 | 1986-03-01 |
+| Shigehito      | Kropatsch        |   67 |               34 | 1986-03-28 |
+| Tommaso        | Narwekar         |   59 |               29 | 1991-06-01 |
+| Christ         | Muchinsky        |   64 |               33 | 1987-08-27 |
+| Khalid         | Erva             |   65 |               31 | 1989-10-05 |
+| Arve           | Fairtlough       |   56 |               34 | 1986-06-23 |
+| Zdislav        | Nastansky        |   61 |               34 | 1986-04-10 |
+| Mohua          | Falck            |   60 |               32 | 1988-06-13 |
+| Masaru         | Cheshire         |   60 |               29 | 1991-07-28 |
+| Josyula        | Hofmeyr          |   66 |               31 | 1989-05-15 |
+| Annemarie      | Redmiles         |   57 |               35 | 1985-02-15 |
+| Marc           | Hellwagner       |   66 |               26 | 1994-11-16 |
+| Kasidit        | Krzyzanowski     |   57 |               27 | 1993-11-22 |
+| Pranav         | Furedi           |   67 |               35 | 1985-08-31 |
+| Kazuhisa       | Ranta            |   61 |               23 | 1997-04-29 |
+| Vidya          | Awdeh            |   59 |               35 | 1985-10-16 |
+| Idoia          | Kavraki          |   64 |               34 | 1986-11-22 |
+| Greger         | Lichtner         |   64 |               29 | 1991-10-06 |
+| Steen          | Escriba          |   65 |               31 | 1989-04-06 |
+| Nevio          | Ritcey           |   64 |               34 | 1986-12-04 |
+| Mabhin         | Leijenhorst      |   67 |               27 | 1993-08-23 |
+| Alassane       | Iwayama          |   60 |               32 | 1988-04-19 |
+| Girolamo       | Anandan          |   65 |               28 | 1992-10-11 |
+| Xiping         | Klerer           |   60 |               29 | 1991-12-23 |
+| Yolla          | Ellozy           |   64 |               29 | 1991-11-23 |
+| Yuping         | Alpin            |   62 |               26 | 1994-05-10 |
+| Vishu          | Strehl           |   56 |               31 | 1989-11-18 |
+| Divier         | Esteva           |   61 |               30 | 1990-07-11 |
+| Jackson        | Kakkad           |   56 |               28 | 1992-11-06 |
+| Tadahiko       | Ciolek           |   58 |               32 | 1988-02-29 |
+| Xiaobin        | Duclos           |   66 |               33 | 1987-10-19 |
+| Amstein        | Ghemri           |   62 |               33 | 1987-10-30 |
+| Yongmin        | Roison           |   66 |               34 | 1986-05-12 |
+| Zhenhua        | Magalhaes        |   62 |               23 | 1997-01-15 |
+| Genta          | Kolvik           |   68 |               27 | 1993-03-31 |
+| Kish           | Fasbender        |   62 |               28 | 1992-06-25 |
+| Yucai          | Granlund         |   63 |               32 | 1988-06-08 |
+| Tze            | Nourani          |   58 |               34 | 1986-06-08 |
+| Carrsten       | Schmiedel        |   57 |               35 | 1985-11-18 |
+| Leon           | Trogemann        |   66 |               32 | 1988-01-09 |
+| Kellie         | Chinen           |   63 |               34 | 1986-06-19 |
+| Xinglin        | Plessier         |   56 |               31 | 1989-10-27 |
+| Anneli         | Kaiser           |   63 |               26 | 1994-04-24 |
+| Karoline       | Cesareni         |   67 |               29 | 1991-08-26 |
+| Ulises         | Takanami         |   68 |               33 | 1987-11-22 |
+| Clyde          | Vernadat         |   65 |               24 | 1996-06-16 |
+| Shaowen        | Desikan          |   57 |               24 | 1996-04-13 |
+| Marko          | Auria            |   64 |               28 | 1992-06-04 |
+| Lein           | Vendrig          |   66 |               35 | 1985-07-05 |
+| Arunachalam    | Bakhtari         |   59 |               30 | 1990-11-19 |
+| Susanta        | Roccetti         |   62 |               25 | 1995-04-06 |
+| Susumu         | Bade             |   60 |               24 | 1996-08-30 |
+| Yannis         | Mandell          |   68 |               31 | 1989-08-11 |
+| Mototsugu      | Gire             |   56 |               34 | 1986-11-19 |
+| Nikolaos       | Llado            |   65 |               25 | 1995-05-08 |
+| Remko          | Maccarone        |   68 |               22 | 1998-10-06 |
+| Ortrud         | Murillo          |   62 |               32 | 1988-06-12 |
+| Lunjin         | Ozeri            |   56 |               32 | 1988-01-18 |
+| Wonhee         | Pouyioutas       |   60 |               35 | 1985-11-24 |
+| Foong          | Flasterstein     |   59 |               35 | 1985-12-23 |
+| Ramalingam     | Gente            |   58 |               35 | 1985-04-26 |
+| Basem          | Teitelbaum       |   58 |               33 | 1987-07-12 |
+| Heon           | Riefers          |   56 |               28 | 1992-08-14 |
+| Frederique     | Tempesti         |   65 |               29 | 1991-08-13 |
+| Marie          | Boreale          |   66 |               29 | 1991-12-08 |
+| Serap          | Etalle           |   62 |               28 | 1992-08-30 |
+| Alair          | Rosenbaum        |   63 |               28 | 1992-06-25 |
+| Shirish        | Wegerle          |   59 |               30 | 1990-11-08 |
+| Zsolt          | Salinas          |   56 |               35 | 1985-02-21 |
+| Shen           | Brattka          |   61 |               30 | 1990-06-14 |
+| Roddy          | Garnick          |   56 |               27 | 1993-05-12 |
+| Irene          | Radhakrishnan    |   60 |               35 | 1985-10-12 |
+| Aiman          | Riexinger        |   63 |               34 | 1986-08-05 |
+| Basil          | Ishibashi        |   65 |               35 | 1985-05-17 |
+| Susanna        | Vesel            |   56 |               34 | 1986-06-25 |
+| Alper          | Suomi            |   59 |               29 | 1991-04-13 |
+| Mang           | Erie             |   61 |               27 | 1993-10-20 |
+| Mahendra       | Maraist          |   65 |               28 | 1992-07-27 |
+| Takahiro       | Waterhouse       |   59 |               26 | 1994-02-05 |
+| Nalini         | Kawashimo        |   62 |               23 | 1997-07-16 |
+| Ramalingam     | Muniz            |   60 |               31 | 1989-07-13 |
+| Sukumar        | Rassart          |   62 |               30 | 1990-05-25 |
+| Shaunak        | Cullers          |   64 |               24 | 1996-12-11 |
+| Nishit         | Siochi           |   62 |               34 | 1986-12-17 |
+| Taizo          | Oxman            |   61 |               32 | 1988-07-24 |
+| Bedir          | Hartvigsen       |   57 |               30 | 1990-04-26 |
+| Sham           | Eastman          |   58 |               34 | 1986-05-23 |
+| Yishai         | Cannane          |   66 |               32 | 1988-05-23 |
+| Baocai         | Lieblein         |   58 |               35 | 1985-11-06 |
+| Dmitri         | Pearson          |   63 |               29 | 1991-04-21 |
+| Marek          | Luck             |   59 |               33 | 1987-09-08 |
+| Xuejun         | Hempstead        |   56 |               35 | 1985-07-21 |
+| Isaac          | Schwartzbauer    |   56 |               35 | 1985-06-16 |
+| Lubomir        | Nitsch           |   65 |               29 | 1991-05-17 |
+| Barton         | Jumpertz         |   56 |               26 | 1994-12-20 |
+| Stabislas      | Delgrange        |   56 |               32 | 1988-03-18 |
+| Moty           | Kusakari         |   67 |               26 | 1994-12-03 |
+| Hercules       | Benzmuller       |   67 |               34 | 1986-06-04 |
+| Kauko          | Birjandi         |   67 |               32 | 1988-05-25 |
+| Masali         | Murrill          |   66 |               23 | 1997-07-02 |
+| Zhonghui       | Preusig          |   64 |               25 | 1995-02-27 |
+| Saddek         | Gopalakrishnan   |   68 |               32 | 1988-03-21 |
+| Marie          | Pietracaprina    |   57 |               28 | 1992-12-28 |
+| Selwyn         | Perri            |   61 |               26 | 1994-08-29 |
+| Shay           | Poulakidas       |   64 |               30 | 1990-06-06 |
+| Yongmao        | Pleszkun         |   63 |               29 | 1991-09-18 |
+| Dipayan        | Seghrouchni      |   55 |               34 | 1986-09-29 |
+| Yucel          | Ghelli           |   57 |               31 | 1989-06-05 |
+| Mihalis        | Avouris          |   64 |               28 | 1992-12-12 |
+| Rutger         | Miara            |   65 |               24 | 1996-04-08 |
+| Kristine       | Velardi          |   67 |               30 | 1990-08-27 |
+| Petter         | Lorho            |   56 |               31 | 1989-09-16 |
+| Narain         | Oaver            |   64 |               34 | 1986-05-28 |
+| Dietrich       | DuCasse          |   66 |               21 | 1999-03-30 |
+| Ipke           | Stentiford       |   60 |               30 | 1990-01-10 |
+| Tadahiko       | Ulupinar         |   60 |               29 | 1991-05-17 |
+| Lucien         | Staudhammer      |   58 |               32 | 1988-05-23 |
+| Faiza          | Baer      |rl-C -- sending "KILL QUERY 58" to server ...
+        |   66 |               34 | 1986-07-22 |
++----------------+-------+----------------+------------------+------+------------------+------------+
+300024 rows in set (0.89 sec)
+
+6.
+mysql> select first_name,last_name,year(CURDATE())-year(birth_date) as age,
+    -> year(CURDATE())-year(hire_date) as years_of_service,hire_date
+    -> from employees
+    -> where year(CURDATE())-year(birth_date) > 50
+    -> and year(CURDATE())-year(hire_date) > 10;
++----------------+------------------+------+------------------+------------+
+| first_name     | last_name        | age  | years_of_service | hire_date  |
++----------------+------------------+------+------------------+------------+
+| Georgi         | Facello          |   67 |               34 | 1986-06-26 |
+| Bezalel        | Simmel           |   56 |               35 | 1985-11-21 |
+| Parto          | Bamford          |   61 |               34 | 1986-08-28 |
+| Chirstian      | Koblick          |   66 |               34 | 1986-12-01 |
+| Kyoichi        | Maliniak         |   65 |               31 | 1989-09-12 |
+| Anneke         | Preusig          |   67 |               31 | 1989-06-02 |
+| Tzvetan        | Zielinski        |   63 |               31 | 1989-02-10 |
+| Saniya         | Kalloufi         |   62 |               26 | 1994-09-15 |
+| Sumant         | Peac             |   68 |               35 | 1985-02-18 |
+| Duangkaew      | Piveteau         |   57 |               31 | 1989-08-24 |
+| Mary           | Sluis            |   67 |               30 | 1990-01-22 |
+| Patricio       | Bridgland        |   60 |               28 | 1992-12-18 |
+| Eberhardt      | Terkki           |   57 |               35 | 1985-10-20 |
+| Berni          | Genin            |   64 |               33 | 1987-03-11 |
+| Guoxiang       | Nooteboom        |   61 |               33 | 1987-07-02 |
+| Kazuhito       | Cappelletti      |   59 |               25 | 1995-01-27 |
+| Cristinel      | Bouloucos        |   62 |               27 | 1993-08-03 |
+| Kazuhide       | Peha             |   66 |               33 | 1987-04-03 |
+| Lillian        | Haddadi          |   67 |               21 | 1999-04-30 |
+| Mayuko         | Warwick          |   68 |               29 | 1991-01-26 |
+| Ramzi          | Erde             |   60 |               32 | 1988-02-10 |
+| Shahaf         | Famili           |   68 |               25 | 1995-08-22 |
+| Bojan          | Montemayor       |   67 |               31 | 1989-12-17 |
+| Suzette        | Pettey           |   62 |               23 | 1997-05-19 |
+| Prasadram      | Heyers           |   62 |               33 | 1987-08-17 |
+| Yongqiao       | Berztiss         |   67 |               25 | 1995-03-20 |
+| Divier         | Reistad          |   58 |               31 | 1989-07-07 |
+| Domenick       | Tempesti         |   57 |               29 | 1991-10-22 |
+| Otmar          | Herbst           |   64 |               35 | 1985-11-20 |
+| Elvis          | Demeyer          |   62 |               26 | 1994-02-17 |
+| Karsten        | Joslin           |   61 |               29 | 1991-09-01 |
+| Jeong          | Reistad          |   60 |               30 | 1990-06-20 |
+| Arif           | Merlo            |   64 |               33 | 1987-03-18 |
+| Bader          | Swan             |   58 |               32 | 1988-09-21 |
+| Alain          | Chappelet        |   67 |               32 | 1988-09-05 |
+| Adamantios     | Portugali        |   61 |               28 | 1992-01-03 |
+| Pradeep        | Makrucki         |   57 |               30 | 1990-12-05 |
+| Huan           | Lortz            |   60 |               31 | 1989-09-20 |
+| Alejandro      | Brender          |   61 |               32 | 1988-01-19 |
+| Weiyi          | Meriste          |   61 |               27 | 1993-02-14 |
+| Uri            | Lenart           |   61 |               31 | 1989-11-12 |
+| Magy           | Stamatiou        |   64 |               27 | 1993-03-21 |
+| Yishay         | Tzvieli          |   60 |               30 | 1990-10-20 |
+| Mingsen        | Casley           |   59 |               26 | 1994-05-21 |
+| Moss           | Shanbhogue       |   63 |               31 | 1989-09-02 |
+| Lucien         | Rosenbaum        |   60 |               28 | 1992-06-20 |
+| Zvonko         | Nyanchama        |   68 |               31 | 1989-03-31 |
+| Florian        | Syrotiuk         |   57 |               35 | 1985-02-24 |
+| Basil          | Tramer           |   59 |               28 | 1992-05-04 |
+| Yinghua        | Dredge           |   62 |               30 | 1990-12-25 |
+| Hidefumi       | Caine            |   67 |               28 | 1992-10-15 |
+| Heping         | Nitsch           |   59 |               32 | 1988-05-21 |
+| Sanjiv         | Zschoche         |   66 |               34 | 1986-02-04 |
+| Mayumi         | Schueller        |   63 |               25 | 1995-03-13 |
+| Georgy         | Dredge           |   64 |               28 | 1992-04-27 |
+| Brendon        | Bernini          |   59 |               30 | 1990-02-01 |
+| Ebbe           | Callaway         |   66 |               28 | 1992-01-15 |
+| Berhard        | McFarlin         |   66 |               33 | 1987-04-13 |
+| Alejandro      | McAlpine         |   67 |               29 | 1991-06-26 |
+| Breannda       | Billingsley      |   59 |               33 | 1987-11-02 |
+| Tse            | Herber           |   58 |               35 | 1985-09-17 |
+| Anoosh         | Peyn             |   59 |               29 | 1991-08-30 |
+| Gino           | Leonhardt        |   68 |               31 | 1989-04-08 |
+| Udi            | Jansch           |   61 |               35 | 1985-11-20 |
+| Satosi         | Awdeh            |   57 |               32 | 1988-05-18 |
+| Kwee           | Schusler         |   68 |               34 | 1986-02-26 |
+| Claudi         | Stavenow         |   67 |               33 | 1987-03-04 |
+| Charlene       | Brattka          |   58 |               33 | 1987-08-07 |
+| Margareta      | Bierman          |   60 |               31 | 1989-11-05 |
+| Reuven         | Garigliano       |   65 |               35 | 1985-10-14 |
+| Hisao          | Lipner           |   62 |               33 | 1987-10-01 |
+| Hironoby       | Sidou            |   68 |               32 | 1988-07-21 |
+| Shir           | McClurg          |   66 | trl-C -- sending "KILL QUERY 58" to server ...
+               29 | 1991-12-01 |
++----------------+------------------+------+------------------+------------+
+300024 rows in set (0.51 300024 rows in set (0.51 sec)
+
+7.
+mysql> select first_name,last_name
+    -> from employees,dept_emp,departments
+    -> where employees.emp_no = dept_emp.emp_no and dept_emp.dept_no = departments.dept_no
+    -> and dept_name <> 'Human Resources';
++----------------+------------------+
+| first_name     | last_name        |
++----------------+------------------+
+| Georgi         | Facello          |
+| Georgi         | Facello          |
+| Bezalel        | Simmel           |
+| Bezalel        | Simmel           |
+| Parto          | Bamford          |
+| Parto          | Bamford          |
+| Chirstian      | Koblick          |
+| Chirstian      | Koblick          |
+| Anneke         | Preusig          |
+| Anneke         | Preusig          |
+| Tzvetan        | Zielinski        |
+| Tzvetan        | Zielinski        |
+| Saniya         | Kalloufi         |
+| Saniya         | Kalloufi         |
+| Sumant         | Peac             |
+| Sumant         | Peac             |
+| Duangkaew      | Piveteau         |
+| Duangkaew      | Piveteau         |
+| Duangkaew      | Piveteau         |
+| Duangkaew      | Piveteau         |
+| Mary           | Sluis            |
+| Mary           | Sluis            |
+| Patricio       | Bridgland        |
+| Patricio       | Bridgland        |
+| Berni          | Genin            |
+| Berni          | Genin            |
+| Guoxiang       | Nooteboom        |
+| Guoxiang       | Nooteboom        |
+| Kazuhito       | Cappelletti      |
+| Kazuhito       | Cappelletti      |
+| Cristinel      | Bouloucos        |
+| Cristinel      | Bouloucos        |
+| Kazuhide       | Peha             |
+| Kazuhide       | Peha             |
+| Kazuhide       | Peha             |
+| Kazuhide       | Peha             |
+| Lillian        | Haddadi          |
+| Lillian        | Haddadi          |
+| Mayuko         | Warwick          |
+| Mayuko         | Warwick          |
+| Ramzi          | Erde             |
+| Ramzi          | Erde             |
+| Shahaf         | Famili           |
+| Shahaf         | Famili           |
+| Bojan          | Montemayor       |
+| Bojan          | Montemayor       |
+| Suzette        | Pettey           |
+| Suzette        | Pettey           |
+| Prasadram      | Heyers           |
+| Prasadram      | Heyers           |
+| Yongqiao       | Berztiss         |
+| Yongqiao       | Berztiss         |
+| Divier         | Reistad          |
+| Divier         | Reistad          |
+| Domenick       | Tempesti         |
+| Domenick       | Tempesti         |
+| Otmar          | Herbst           |
+| Otmar          | Herbst           |
+| Otmar          | Herbst           |
+| Otmar          | Herbst           |
+| Elvis          | Demeyer          |
+| Elvis          | Demeyer          |
+| Karsten        | Joslin           |
+| Karsten        | Joslin           |
+| Jeong          | Reistad          |
+| Jeong          | Reistad          |
+| Arif           | Merlo            |
+| Arif           | Merlo            |
+| Bader          | Swan             |
+| Bader          | Swan             |
+| Alain          | Chappelet        |
+| Alain          | Chappelet        |
+| Pradeep        | Makrucki         |
+| Pradeep        | Makrucki         |
+| Huan           | Lortz            |
+| Huan           | Lortz            |
+| Weiyi          | Meriste          |
+| Weiyi          | Meriste          |
+| Weiyi          | Meriste          |
+| Weiyi          | Meriste          |
+| Uri            | Lenart           |
+| Uri            | Lenart           |
+| Magy           | Stamatiou        |
+| Magy           | Stamatiou        |
+| Yishay         | Tzvieli          |
+| Yishay         | Tzvieli          |
+| Mingsen        | Casley           |
+| Mingsen        | Casley           |
+| Moss           | Shanbhogue       |
+| Moss           | Shanbhogue       |
+| Lucien         | Rosenbaum        |
+| Lucien         | Rosenbaum        |
+| Zvonko         | Nyanchama        |
+| Zvonko         | Nyanchama        |
+| Florian        | Syrotiuk         |
+| Florian        | Syrotiuk         |
+| Basil          | Tramer           |
+| Basil          | Tramer           |
+| Yinghua        | Dredge           |
+| Yinghua        | Dredge           |
+| Yinghua        | Dredge           |
+| Yinghua        | Dredge           |
+| Hidefumi trl-C -- sending "KILL QUERY 58" to server ...
+       | Caine |rl-C -- query aborted.
+            |
++----------------+------------------+
+627634 rows in set (4.49 sec)
+
+8.
+mysql> select first_name,last_name
+    -> from employees,dept_emp,departments,salaries
+    -> where salary > all(select salary from salaries,dept_emp,departments
+    -> where salaries.emp_no = dept_emp.emp_no and dept_emp.dept_no = departments.dept_no
+    -> and dept_name = 'Finance');
+
+9.
+mysql> select first_name,last_name
+    -> from employees,salaries
+    -> where employees.emp_no = salaries.emp_no and salary > (select avg(salary) from salaries);
++----------------+------------------+
+| first_name     | last_name        |
++----------------+------------------+
+| Krassimir      | Linares          |
+| Krassimir      | Linares          |
+| Krassimir      | Linares          |
+| Krassimir      | Linares          |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Wonhee         | Perl             |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Nidapan        | Provine          |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Margareta      | Petersohn        |
+| Urs            | Krone            |
+| Urs            | Krone            |
+| Urs            | Krone            |
+| Urs            | Krone            |
+| Urs            | Krone            |
+| Urs            | Krone            |
+| Franziska      | Marrevee         |
+| Franziska      | Marrevee         |
+| Franziska      | Marrevee         |
+| Eishiro        | Garigliano       |
+| Eishiro        | Garigliano       |
+| Eishiro        | Garigliano       |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Mary           | Gente            |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Chinhyun       | Hiyoshi          |
+| Shmuel         | Sudkamp          |
+| Shmuel         | Sudkamp          |
+| Shmuel         | Sudkamp          |
+| Shmuel         | Sudkamp          |
+| Shmuel         | Sudkamp          |
+| Shmuel         | Sudkamp          |
+| Vivian         | Chachaty         |
+| Vivian         | Chachaty         |
+| Vivian         | Chachaty         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengping       | Poehlman         |
+| Zengptrl-C -- sending "KILL QUERY 149" to server ...
+ping       | Poehlman|rl-C -- query aborted.
+n         |
++----------------+------------------+
+418162 rows in set (1.65 sec)
+
+10.
+mysql> select (select avg(salary) from salaries) - (select avg(salary) from salaries,titles
+    -> where salaries.emp_no = titles.emp_no and title = "Senior Engineer") as difference;
++------------+
+| difference |
++------------+
+|  3278.5232 |
++------------+
+1 row in set (5.32 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

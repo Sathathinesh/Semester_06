@@ -1,0 +1,72 @@
+A Child is created
+My pid(child) is 10669
+My parent pid(child) is 10667
+A Child is created
+My pid(child) is 10670
+My parent pid(child) is 10669
+A Child is created
+My pid(child) is 10671
+My parent pid(child) is 10670
+A Child is created
+My pid(child) is 10669
+My parent pid(child) is 10667
+A Child is created
+My pid(child) is 10670
+My parent pid(child) is 10669
+A Parent is created
+My pid(parent) is  10670
+My parent(parent) id is  10669
+A Child is created
+My pid(child) is 10669
+My parent pid(child) is 10667
+A Parent is created
+My pid(parent) is  10669
+My parent(parent) id is  10667
+A Child is created
+My pid(child) is 10672
+My parent pid(child) is 10669
+A Child is created
+My pid(child) is 10669
+My parent pid(child) is 10667
+A Parent is created
+My pid(parent) is  10669
+My parent(parent) id is  10667
+A Parent is created
+My pid(parent) is  10669
+My parent(parent) id is  10667
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Child is created
+My pid(child) is 10673
+My parent pid(child) is 10667
+A Child is created
+My pid(child) is 10674
+My parent pid(child) is 10673
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Child is created
+My pid(child) is 10673
+My parent pid(child) is 10667
+A Parent is created
+My pid(parent) is  10673
+My parent(parent) id is  10667
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Child is created
+My pid(child) is 10675
+My parent pid(child) is 10667
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260
+A Parent is created
+My pid(parent) is  10667
+My parent(parent) id is  6260

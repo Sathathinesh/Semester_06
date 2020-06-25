@@ -1,0 +1,127 @@
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 22
+Server version: 5.6.12-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use company;
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| departments       |
+| dept_emp          |
+| dept_manager      |
+| employees         |
+| salaries          |
+| titles            |
++-------------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from employees order by first_name asc;
++--------+------------+----------------+------------------+------+------------+
+| emp_no | birth_date | first_name     | last_name        | sex  | hire_date  |
++--------+------------+----------------+------------------+------+------------+
+|  11800 | 1958-12-09 | Aamer          | Fraisse          | M    | 1990-08-08 |
+|  11935 | 1963-03-23 | Aamer          | Jayawardene      | M    | 1996-10-26 |
+|  12160 | 1954-12-11 | Aamer          | Garrabrants      | M    | 1989-09-19 |
+|  13011 | 1955-02-25 | Aamer          | Glowinski        | F    | 1989-10-08 |
+|  15332 | 1961-12-29 | Aamer          | Slutz            | F    | 1989-05-19 |
+
+300024 rows in set (0.32 sec)
+
+mysql> create index fname_index ON company.employees(first_name);
+Query OK, 0 rows affected (0.54 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employees order by first_name asc;
++--------+------------+----------------+------------------+------+------------+
+| emp_no | birth_date | first_name     | last_name        | sex  | hire_date  |
++--------+------------+----------------+------------------+------+------------+
+|  11800 | 1958-12-09 | Aamer          | Fraisse          | M    | 1990-08-08 |
+|  11935 | 1963-03-23 | Aamer          | Jayawardene      | M    | 1996-10-26 |
+|  12160 | 1954-12-11 | Aamer          | Garrabrants      | M    | 1989-09-19 |
+|  13011 | 1955-02-25 | Aamer          | Glowinski        | F    | 1989-10-08 |
+|  15332 | 1961-12-29 | Aamer          | Slutz            | F    | 1989-05-19 |
+300024 rows in set (0.31 sec)
+
+mysql> show index from employees;
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table     | Non_unique | Key_name    | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| employees |          0 | PRIMARY     |            1 | emp_no      | A         |      299297 |     NULL | NULL   |      | BTREE      |         |               |
+| employees |          1 | fname_index |            1 | first_name  | A         |        2602 |     NULL | NULL   | YES  | BTREE      |         |               |
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+2 rows in set (0.00 sec)
+
+4) 
+mysql> create unique index unique_ix on employees (emp_no,first_name,last_name);
+Query OK, 0 rows affected (0.55 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from employees;
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table     | Non_unique | Key_name    | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| employees |          0 | PRIMARY     |            1 | emp_no      | A         |      299297 |     NULL | NULL   |      | BTREE      |         |               |
+| employees |          0 | unique_ix   |            1 | emp_no      | A         |      299297 |     NULL | NULL   |      | BTREE      |         |               |
+| employees |          0 | unique_ix   |            2 | first_name  | A         |      299297 |     NULL | NULL   | YES  | BTREE      |         |               |
+| employees |          0 | unique_ix   |            3 | last_name   | A         |      299297 |     NULL | NULL   | YES  | BTREE      |         |               |
+| employees |          1 | fname_index |            1 | first_name  | A         |        2696 |     NULL | NULL   | YES  | BTREE      |         |               |
++-----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from employees order by emp_no,first_name,last_name asc;
++--------+------------+----------------+------------------+------+------------+
+| emp_no | birth_date | first_name     | last_name        | sex  | hire_date  |
++--------+------------+----------------+------------------+------+------------+
+|  10001 | 1953-09-02 | Georgi         | Facello          | M    | 1986-06-26 |
+|  10002 | 1964-06-02 | Bezalel        | Simmel           | F    | 1985-11-21 |
+|  10003 | 1959-12-03 | Parto          | Bamford          | M    | 1986-08-28 |
+|  10004 | 1954-05-01 | Chirstian      | Koblick          | M    | 1986-12-01 |
+|  10005 | 1955-01-21 | Kyoichi        | Maliniak         | M    | 1989-09-12 |
+
+300024 rows in set (0.13 sec)
+
+
+mysql> EXPLAIN select distinct emp_no from dept_manager where from_date >= '1985-01-01' and dept_no>= 'd005';
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+| id | select_type | table        | type  | possible_keys   | key     | key_len | ref  | rows | Extra       |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+|  1 | SIMPLE      | dept_manager | index | PRIMARY,dept_no | PRIMARY | 8       | NULL |   24 | Using where |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+1 row in set (0.01 sec)
+
+mysql>  EXPLAIN select distinct emp_no from dept_manager where from_date >= '1996-01-03' and dept_no>= 'd005';
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+| id | select_type | table        | type  | possible_keys   | key     | key_len | ref  | rows | Extra       |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+|  1 | SIMPLE      | dept_manager | index | PRIMARY,dept_no | PRIMARY | 8       | NULL |   24 | Using where |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+-------------+
+1 row in set (0.00 sec)
+
+mysql> EXPLAIN EXTENDED select distinct emp_no from dept_manager where from_date >= '1985-01-01' and dept_no<= 'd009';
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+----------+-------------+
+| id | select_type | table        | type  | possible_keys   | key     | key_len | ref  | rows | filtered | Extra       |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | dept_manager | index | PRIMARY,dept_no | PRIMARY | 8       | NULL |   24 |   100.00 | Using where |
++----+-------------+--------------+-------+-----------------+---------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.00 sec)
+
+
+mysql> show index from dept_manager;
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table        | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| dept_manager |          0 | PRIMARY  |            1 | emp_no      | A         |          24 |     NULL | NULL   |      | BTREE      |         |               |
+| dept_manager |          0 | PRIMARY  |            2 | dept_no     | A         |          24 |     NULL | NULL   |      | BTREE      |         |               |
+| dept_manager |          1 | dept_no  |            1 | dept_no     | A         |          24 |     NULL | NULL   |      | BTREE      |         |               |
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+3 rows in set (0.00 sec)

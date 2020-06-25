@@ -1,0 +1,383 @@
+
+mysql> use company_security;
+Database changed
+mysql> source company_security.sql;
+ERROR:
+Failed to open file 'company_security.sql', error: 2
+mysql> SET autocommit=0 ; source company_security.sql ; COMMIT ;
+Query OK, 0 rows affected (0.00 sec)
+
+ERROR:
+Failed to open file 'company_security.sql', error: 2
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show tables;
++----------------------------+
+| Tables_in_company_security |
++----------------------------+
+| department                 |
+| dependent                  |
+| dept_locations             |
+| employee                   |
+| project                    |
+| works_on                   |
++----------------------------+
+6 rows in set (0.00 sec)
+
+mysql>
+
+mysql> create user  'user1'@'localhost' IDENTIFIED BY'password1';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+
+mysql> create user  'user2'@'localhost' IDENTIFIED BY'password2';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT USER,HOST from MYSQL.USER;
++-------+-----------+
+| USER  | HOST      |
++-------+-----------+
+| test  | %         |
+| root  | 127.0.0.1 |
+| root  | ::1       |
+|       | localhost |
+| root  | localhost |
+| user1 | localhost |
+| user2 | localhost |
++-------+-----------+
+7 rows in set (0.00 sec)
+
+mysql>
+
+mysql> grant select on company_security.employee to 'user1'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+
+mysql> insert into employee (Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) values
+    -> (Thinesh,C,Satha,999998877,1996-04-01,jaffna,M,30000,98755525,6);
+ERROR 1142 (42000): INSERT command denied to user 'user1'@'localhost' for table 'employee'
+mysql>
+
+
+C:\Users>cd  ..
+
+C:\>cd wamp
+
+C:\wamp>cd bin
+
+C:\wamp\bin>cd mysql
+
+C:\wamp\bin\mysql>cd mysql5.6.12
+
+C:\wamp\bin\mysql\mysql5.6.12>cd bin
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u user -p
+Enter password: *********
+ERROR 2003 (HY000): Can't connect to MySQL server on 'localhost' (10061)
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u user -p
+Enter password: *********
+ERROR 1045 (28000): Access denied for user 'user'@'localhost' (using password: YES)
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u user1 -p
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.6.12-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> select * from employee;
+ERROR 1046 (3D000): No database selected
+mysql> use company_security;
+Database changed
+mysql> select * from employee;
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| Fname    | Minit | Lname   | Ssn       | Bdate      | Address                  | Sex  | Salary   | Super_ssn | Dno |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| John     | B     | Smith   | 123456789 | 1965-01-09 | 731 Fondren, Housten, TX | M    | 30000.00 | 333445555 |   5 |
+| Franklin | T     | Wong    | 333445555 | 1955-12-08 | 638 Voss, Housten, TX    | M    | 40000.00 | 888665555 |   5 |
+| Joyce    | A     | English | 453453453 | 1972-07-31 | 5631 Rice, Houston, TX   | F    | 25000.00 | 333445555 |   5 |
+| Ramesh   | K     | Narayan | 666884444 | 1962-09-15 | 975 Fire Oak, Humble, TX | M    | 38000.00 | 333445555 |   5 |
+| James    | E     | Borg    | 888665555 | 1937-11-10 | 450 Stone, Houston, TX   | M    | 30000.00 | NULL      |   1 |
+| Jennifer | S     | Wallace | 987654321 | 1941-06-20 | 291 Berry, Bellaire, TX  | F    | 43000.00 | 888665555 |   4 |
+| Ahmad    | V     | Jabbar  | 987987987 | 1969-03-29 | 980 Dallas, Houston, TX  | M    | 25000.00 | 987654321 |   4 |
+| Alicia   | J     | Zelaya  | 999887777 | 1968-01-19 | 3321 Castle, Spring, TX  | F    | 25000.00 | 987654321 |   4 |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+8 rows in set (0.02 sec)
+
+mysql> insert into employee (Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) values
+    -> (Thinesh,C,Satha,999998877,1996-04-01,jaffna,M,30000,98755525,6);
+ERROR 2006 (HY000): MySQL server has gone away
+No connection. Trying to reconnect...
+Connection id:    5
+Current database: company_security
+
+ERROR 1142 (42000): INSERT command denied to user 'user1'@'localhost' for table 'employee'
+mysql> select * from employee;
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| Fname    | Minit | Lname   | Ssn       | Bdate      | Address                  | Sex  | Salary   | Super_ssn | Dno |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| John     | B     | Smith   | 123456789 | 1965-01-09 | 731 Fondren, Housten, TX | M    | 30000.00 | 333445555 |   5 |
+| Franklin | T     | Wong    | 333445555 | 1955-12-08 | 638 Voss, Housten, TX    | M    | 40000.00 | 888665555 |   5 |
+| Joyce    | A     | English | 453453453 | 1972-07-31 | 5631 Rice, Houston, TX   | F    | 25000.00 | 333445555 |   5 |
+| Ramesh   | K     | Narayan | 666884444 | 1962-09-15 | 975 Fire Oak, Humble, TX | M    | 38000.00 | 333445555 |   5 |
+| James    | E     | Borg    | 888665555 | 1937-11-10 | 450 Stone, Houston, TX   | M    | 30000.00 | NULL      |   1 |
+| Jennifer | S     | Wallace | 987654321 | 1941-06-20 | 291 Berry, Bellaire, TX  | F    | 43000.00 | 888665555 |   4 |
+| Ahmad    | V     | Jabbar  | 987987987 | 1969-03-29 | 980 Dallas, Houston, TX  | M    | 25000.00 | 987654321 |   4 |
+| Alicia   | J     | Zelaya  | 999887777 | 1968-01-19 | 3321 Castle, Spring, TX  | F    | 25000.00 | 987654321 |   4 |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+8 rows in set (0.00 sec)
+
+mysql> use company_security;
+Database changed
+mysql> insert into employee (Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) values
+    -> (Thinesh,C,Satha,999998877,1996-04-01,jaffna,M,30000,98755525,6);
+ERROR 1142 (42000): INSERT command denied to user 'user1'@'localhost' for table 'employee'
+mysql> mysql> Ctrl-C -- exit!
+
+mysql>
+
+mysql> use company_security;
+Database changed
+mysql> grant insert on employee to 'user1'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into employee (Fname,Lname,Ssn,Bdate,Address,Salary,Dno) values
+    -> ('Thinesh','Satha','999998877',1996-04-01,'jaffna',30000,5);
+Query OK, 1 row affected, 1 warning (0.00 sec)
+
+mysql>
+
+mysql> grant create view on company_security.* to 'user1'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> grant select on works_on to 'user1'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create view works_on1 as select Fname,Lname,Pno from employee,works_on;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> grant select on works_on1 to 'user2'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+
+mysql> exit
+Bye
+
+C:\wamp\bin\mysql\mysql5.6.12\bin>mysql -u user2 -p
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 5.6.12-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> select * from works_on1;
+ERROR 1046 (3D000): No database selected
+mysql> use company_security;
+Database changed
+mysql> select * from works_on1;
++----------+---------+-----+
+| Fname    | Lname   | Pno |
++----------+---------+-----+
+| John     | Smith   |   1 |
+| Franklin | Wong    |   1 |
+| Joyce    | English |   1 |
+| Ramesh   | Narayan |   1 |
+| James    | Borg    |   1 |
+| Jennifer | Wallace |   1 |
+| Ahmad    | Jabbar  |   1 |
+| Alicia   | Zelaya  |   1 |
+| Thinesh  | Satha   |   1 |
+| John     | Smith   |   1 |
+| Franklin | Wong    |   1 |
+| Joyce    | English |   1 |
+| Ramesh   | Narayan |   1 |
+| James    | Borg    |   1 |
+| Jennifer | Wallace |   1 |
+| Ahmad    | Jabbar  |   1 |
+| Alicia   | Zelaya  |   1 |
+| Thinesh  | Satha   |   1 |
+| John     | Smith   |   2 |
+| Franklin | Wong    |   2 |
+| Joyce    | English |   2 |
+| Ramesh   | Narayan |   2 |
+| James    | Borg    |   2 |
+| Jennifer | Wallace |   2 |
+| Ahmad    | Jabbar  |   2 |
+| Alicia   | Zelaya  |   2 |
+| Thinesh  | Satha   |   2 |
+| John     | Smith   |   2 |
+| Franklin | Wong    |   2 |
+| Joyce    | English |   2 |
+| Ramesh   | Narayan |   2 |
+| James    | Borg    |   2 |
+| Jennifer | Wallace |   2 |
+| Ahmad    | Jabbar  |   2 |
+| Alicia   | Zelaya  |   2 |
+| Thinesh  | Satha   |   2 |
+| John     | Smith   |   2 |
+| Franklin | Wong    |   2 |
+| Joyce    | English |   2 |
+| Ramesh   | Narayan |   2 |
+| James    | Borg    |   2 |
+| Jennifer | Wallace |   2 |
+| Ahmad    | Jabbar  |   2 |
+| Alicia   | Zelaya  |   2 |
+| Thinesh  | Satha   |   2 |
+| John     | Smith   |   3 |
+| Franklin | Wong    |   3 |
+| Joyce    | English |   3 |
+| Ramesh   | Narayan |   3 |
+| James    | Borg    |   3 |
+| Jennifer | Wallace |   3 |
+| Ahmad    | Jabbar  |   3 |
+| Alicia   | Zelaya  |   3 |
+| Thinesh  | Satha   |   3 |
+| John     | Smith   |   3 |
+| Franklin | Wong    |   3 |
+| Joyce    | English |   3 |
+| Ramesh   | Narayan |   3 |
+| James    | Borg    |   3 |
+| Jennifer | Wallace |   3 |
+| Ahmad    | Jabbar  |   3 |
+| Alicia   | Zelaya  |   3 |
+| Thinesh  | Satha   |   3 |
+| John     | Smith   |  10 |
+| Franklin | Wong    |  10 |
+| Joyce    | English |  10 |
+| Ramesh   | Narayan |  10 |
+| James    | Borg    |  10 |
+| Jennifer | Wallace |  10 |
+| Ahmad    | Jabbar  |  10 |
+| Alicia   | Zelaya  |  10 |
+| Thinesh  | Satha   |  10 |
+| John     | Smith   |  10 |
+| Franklin | Wong    |  10 |
+| Joyce    | English |  10 |
+| Ramesh   | Narayan |  10 |
+| James    | Borg    |  10 |
+| Jennifer | Wallace |  10 |
+| Ahmad    | Jabbar  |  10 |
+| Alicia   | Zelaya  |  10 |
+| Thinesh  | Satha   |  10 |
+| John     | Smith   |  10 |
+| Franklin | Wong    |  10 |
+| Joyce    | English |  10 |
+| Ramesh   | Narayan |  10 |
+| James    | Borg    |  10 |
+| Jennifer | Wallace |  10 |
+| Ahmad    | Jabbar  |  10 |
+| Alicia   | Zelaya  |  10 |
+| Thinesh  | Satha   |  10 |
+| John     | Smith   |  20 |
+| Franklin | Wong    |  20 |
+| Joyce    | English |  20 |
+| Ramesh   | Narayan |  20 |
+| James    | Borg    |  20 |
+| Jennifer | Wallace |  20 |
+| Ahmad    | Jabbar  |  20 |
+| Alicia   | Zelaya  |  20 |
+| Thinesh  | Satha   |  20 |
+| John     | Smith   |  20 |
+| Franklin | Wong    |  20 |
+| Joyce    | English |  20 |
+| Ramesh   | Narayan |  20 |
+| James    | Borg    |  20 |
+| Jennifer | Wallace |  20 |
+| Ahmad    | Jabbar  |  20 |
+| Alicia   | Zelaya  |  20 |
+| Thinesh  | Satha   |  20 |
+| John     | Smith   |  20 |
+| Franklin | Wong    |  20 |
+| Joyce    | English |  20 |
+| Ramesh   | Narayan |  20 |
+| James    | Borg    |  20 |
+| Jennifer | Wallace |  20 |
+| Ahmad    | Jabbar  |  20 |
+| Alicia   | Zelaya  |  20 |
+| Thinesh  | Satha   |  20 |
+| John     | Smith   |  30 |
+| Franklin | Wong    |  30 |
+| Joyce    | English |  30 |
+| Ramesh   | Narayan |  30 |
+| James    | Borg    |  30 |
+| Jennifer | Wallace |  30 |
+| Ahmad    | Jabbar  |  30 |
+| Alicia   | Zelaya  |  30 |
+| Thinesh  | Satha   |  30 |
+| John     | Smith   |  30 |
+| Franklin | Wong    |  30 |
+| Joyce    | English |  30 |
+| Ramesh   | Narayan |  30 |
+| James    | Borg    |  30 |
+| Jennifer | Wallace |  30 |
+| Ahmad    | Jabbar  |  30 |
+| Alicia   | Zelaya  |  30 |
+| Thinesh  | Satha   |  30 |
+| John     | Smith   |  30 |
+| Franklin | Wong    |  30 |
+| Joyce    | English |  30 |
+| Ramesh   | Narayan |  30 |
+| James    | Borg    |  30 |
+| Jennifer | Wallace |  30 |
+| Ahmad    | Jabbar  |  30 |
+| Alicia   | Zelaya  |  30 |
+| Thinesh  | Satha   |  30 |
++----------+---------+-----+
+144 rows in set (0.00 sec)
+
+mysql>
+mysql> REVOKE SELECT
+    -> ON company_security.*
+    -> from 'user1'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from works_on1;
+ERROR 1142 (42000): SELECT command denied to user 'user1'@'localhost' for table 'works_on1'
+mysql>
+
+
+mysql> select * from employee
+    -> where ssn=999887777;
++--------+-------+--------+-----------+------------+-------------------------+------+----------+-----------+-----+
+| Fname  | Minit | Lname  | Ssn       | Bdate      | Address                 | Sex  | Salary   | Super_ssn | Dno |
++--------+-------+--------+-----------+------------+-------------------------+------+----------+-----------+-----+
+| Alicia | J     | Zelaya | 999887777 | 1968-01-19 | 3321 Castle, Spring, TX | F    | 25000.00 | 987654321 |   4 |
++--------+-------+--------+-----------+------------+-------------------------+------+----------+-----------+-----+
+1 row in set (0.01 sec)
+
+mysql> select * from employee
+    -> where ssn=999887777 or 'x'='x';
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| Fname    | Minit | Lname   | Ssn       | Bdate      | Address                  | Sex  | Salary   | Super_ssn | Dno |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+| John     | B     | Smith   | 123456789 | 1965-01-09 | 731 Fondren, Housten, TX | M    | 30000.00 | 333445555 |   5 |
+| Franklin | T     | Wong    | 333445555 | 1955-12-08 | 638 Voss, Housten, TX    | M    | 40000.00 | 888665555 |   5 |
+| Joyce    | A     | English | 453453453 | 1972-07-31 | 5631 Rice, Houston, TX   | F    | 25000.00 | 333445555 |   5 |
+| Ramesh   | K     | Narayan | 666884444 | 1962-09-15 | 975 Fire Oak, Humble, TX | M    | 38000.00 | 333445555 |   5 |
+| James    | E     | Borg    | 888665555 | 1937-11-10 | 450 Stone, Houston, TX   | M    | 30000.00 | NULL      |   1 |
+| Jennifer | S     | Wallace | 987654321 | 1941-06-20 | 291 Berry, Bellaire, TX  | F    | 43000.00 | 888665555 |   4 |
+| Ahmad    | V     | Jabbar  | 987987987 | 1969-03-29 | 980 Dallas, Houston, TX  | M    | 25000.00 | 987654321 |   4 |
+| Alicia   | J     | Zelaya  | 999887777 | 1968-01-19 | 3321 Castle, Spring, TX  | F    | 25000.00 | 987654321 |   4 |
+| Thinesh  | NULL  | Satha   | 999998877 | 0000-00-00 | jaffna                   | NULL | 30000.00 | NULL      |   5 |
++----------+-------+---------+-----------+------------+--------------------------+------+----------+-----------+-----+
+9 rows in set (0.00 sec)
+
+mysql>
